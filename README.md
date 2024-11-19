@@ -51,13 +51,14 @@ Como instalar o N8N em modo fila
   ]
 }
 ```
+## 3. Configurar as variáveis
 
-## 3. Duplicar em n8n-hook e n8n-worker
+## 4. Duplicar em n8n-hook e n8n-worker
 #### A) Criar mais duas N8N através da Template do EasyPanel
 #### B) Nomear n8n-hook e n8n-worker
 #### C) Copiar e colar as Environment Variables
 
-## 4. Configurar a Encryption Key no EasyPanel
+## 5. Configurar a Encryption Key no EasyPanel
 
 1. **Acesse o console do EasyPanel**:
    - Digite:
@@ -77,10 +78,10 @@ Como instalar o N8N em modo fila
 4. **Repita nas demais instâncias**:
    - Certifique-se de usar a mesma chave em todas.
 
-## 5. Configure os dominios
+## 6. Configure os dominios
 Deixe exatamente igual no seu DNS
 
-## 6. Configure os comandos
+## 7. Configure os comandos
 ### Passo a Passo Rápido para Configurar os Comandos de Inicialização
 
 1. **Configurar a instância main**:
