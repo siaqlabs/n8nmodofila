@@ -52,11 +52,12 @@ Como instalar o N8N em modo fila
 }
 ```
 ## 3. Configurar as variáveis
+Copiar e colar as Credentials do Postgres e Redis para dentro da Environment Variables do n8n-main
 
 ## 4. Duplicar em n8n-hook e n8n-worker
 #### A) Criar mais duas N8N através da Template do EasyPanel
 #### B) Nomear n8n-hook e n8n-worker
-#### C) Copiar e colar as Environment Variables
+#### C) Copiar e colar as Environment Variables do passo 3
 
 ## 5. Configurar a Encryption Key no EasyPanel
 
@@ -66,23 +67,25 @@ Como instalar o N8N em modo fila
      vi /home/node/.n8n/config
      ```
 
-2. **Copie a Encryption Key da primeira instância**:
-   - Encontre a linha com a chave (`N8N_ENCRYPTION_KEY`).
-   - Copie o valor gerado no site: https://acte.ltd/utils/randomkeygen
+2. **Gere uma chave no site:** https://acte.ltd/utils/randomkeygen
 
-3. **Configure nas outras instâncias**:
+3. **Configure a chave**:
    - Abra o arquivo de configuração (`vi /home/node/.n8n/config`).
    - Pressione **`i`** para editar, apague a chave antiga e cole a copiada.
    - Pressione **`Esc`** e digite `:wq`, depois pressione Enter para salvar e sair.
 
 4. **Repita nas demais instâncias**:
    - Certifique-se de usar a mesma chave em todas.
+  
+5. **Atualize a Encryption Key nas Environment Variables**:
+   - Encontre a linha com a chave (`N8N_ENCRYPTION_KEY`).
+   - Repita para as 3 instâncias
 
 ## 6. Configure os dominios
-Deixe exatamente igual no seu DNS
+   - Va na aba "Domains"
+   - Configure os domínios igual no seu DNS.
 
 ## 7. Configure os comandos
-### Passo a Passo Rápido para Configurar os Comandos de Inicialização
 
 1. **Configurar a instância main**:
    - Acesse a aba **Advanced**.
