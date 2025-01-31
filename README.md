@@ -1,20 +1,7 @@
-# 📌 **Como instalar o n8n em modo fila no EasyPanel (Corrigido)**
-### 🔹 **Componentes:**
-- **PostgreSQL** (banco de dados)
-- **Redis** (fila para execução distribuída)
-- **n8n-main** (interface e gerenciamento dos fluxos)
-- **n8n-webhook** (responsável pelos webhooks)
-- **n8n-worker** (executa os fluxos em segundo plano)
+n8nmodofila
+Como instalar o N8N em modo fila
 
----
-
-## 🔥 **Passo 1: Instalar PostgreSQL e Redis com persistência de dados**
-### **Criação dos Serviços**
-No EasyPanel, crie **dois serviços**: **PostgreSQL** e **Redis**.
-
-📌 **Adicione persistência ao banco de dados PostgreSQL** e ao Redis.
-
-```json
+1. Instalar Postgres e Redis
 {
   "services": [
     {
@@ -22,14 +9,7 @@ No EasyPanel, crie **dois serviços**: **PostgreSQL** e **Redis**.
       "data": {
         "projectName": "n8n-postgres",
         "serviceName": "n8n-postgres",
-        "image": "bitnami/postgresql:16",
-        "mounts": [
-          {
-            "type": "volume",
-            "source": "n8n-postgres-data",
-            "target": "/bitnami/postgresql"
-          }
-        ]
+        "image": "bitnami/postgresql:16"
       }
     },
     {
@@ -37,22 +17,12 @@ No EasyPanel, crie **dois serviços**: **PostgreSQL** e **Redis**.
       "data": {
         "projectName": "n8n",
         "serviceName": "n8n-redis",
-        "password": "senharedis",
-        "env": "appendonly yes"
+        "password": "senharedis"
       }
     }
   ]
 }
-```
-✅ **Isso garante que os dados do banco e da fila Redis não serão apagados ao reiniciar a máquina.**
-
----
-
-## 🔥 **Passo 2: Instalar o n8n-main (Interface Principal)**
-No EasyPanel, crie um **serviço do tipo "App"** para o **n8n-main**.
-
-📌 **Configuração corrigida para evitar perda de dados:**
-```json
+2. Instalar n8n-main
 {
   "services": [
     {
@@ -70,123 +40,54 @@ No EasyPanel, crie um **serviço do tipo "App"** para o **n8n-main**.
             "port": 5678
           }
         ],
-        "env": "DB_TYPE=postgresdb \nDB_POSTGRESDB_DATABASE=n8n_database \nDB_POSTGRESDB_HOST=n8n-postgres \nDB_POSTGRESDB_PORT=5432 \nDB_POSTGRESDB_USER=postgres \nDB_POSTGRESDB_PASSWORD=password \nDB_POSTGRESDB_SCHEMA=public \nQUEUE_BULL_REDIS_HOST=n8n-redis \nQUEUE_BULL_REDIS_PORT=6379 \nQUEUE_BULL_REDIS_DB=2 \nQUEUE_BULL_REDIS_USER=default \nQUEUE_BULL_REDIS_PASSWORD=senharedis \nNODE_FUNCTION_ALLOW_EXTERNAL=moment,lodash,moment-with-locales \nEXECUTIONS_DATA_PRUNE=true \nEXECUTIONS_DATA_MAX_AGE=336 \nGENERIC_TIMEZONE=America/Sao_Paulo \nTZ=America/Sao_Paulo \nEXECUTIONS_MODE=queue \nN8N_ENCRYPTION_KEY=encryption_key \nN8N_HOST=https://$(PRIMARY_DOMAIN) \nN8N_EDITOR_BASE_URL=https://$(PRIMARY_DOMAIN) \nN8N_PROTOCOL=https \nNODE_ENV=production \nWEBHOOK_URL=https://n8nwebhook.seu.dominio \nN8N_DISABLE_PRODUCTION_MAIN_PROCESS=false \n",
-        "mounts": [
-          {
-            "type": "volume",
-            "source": "n8n-data",
-            "target": "/home/node/.n8n"
-          }
-        ]
+        "env": "DB_TYPE=postgresdb \nDB_POSTGRESDB_DATABASE=databasename \nDB_POSTGRESDB_HOST=internalhost \nDB_POSTGRESDB_PORT=5432 \nDB_POSTGRESDB_USER=postgres \nDB_POSTGRESDB_PASSWORD=password \nQUEUE_BULL_REDIS_HOST=internalhost \nQUEUE_BULL_REDIS_PORT=6379 \nQUEUE_BULL_REDIS_DB=2 \nQUEUE_BULL_REDIS_USER=default \nQUEUE_BULL_REDIS_PASSWORD=senharedis \nNODE_FUNCTION_ALLOW_EXTERNAL=moment,lodash,moment-with-locales \nEXECUTIONS_DATA_PRUNE=true \nEXECUTIONS_DATA_MAX_AGE=336 \nGENERIC_TIMEZONE=America/Sao_Paulo \nTZ=America/Sao_Paulo \nEXECUTIONS_MODE=queue \nN8N_ENCRYPTION_KEY=encriptionkey \nN8N_HOST=https://$(PRIMARY_DOMAIN) \nN8N_EDITOR_BASE_URL=https://$(PRIMARY_DOMAIN) \nN8N_PROTOCOL=https \nNODE_ENV=production \nWEBHOOK_URL=https://n8nwebhook.seu.dominio \n",
+        "mounts": []
       }
     }
   ]
 }
-```
+3. Configurar as variáveis
+Copiar e colar as Credentials do Postgres e Redis para dentro da Environment Variables do n8n-main
 
-✅ **Isso garante que os dados e fluxos do n8n não sejam apagados ao reiniciar.**  
+4. Duplicar em n8n-hook e n8n-worker
+A) Criar mais duas N8N através da Template do EasyPanel
+B) Nomear n8n-hook e n8n-worker
+C) Copiar e colar as Environment Variables do passo 3
+5. Configurar a Encryption Key no EasyPanel
+Acesse o console do EasyPanel:
 
----
+Digite:
+vi /home/node/.n8n/config
+Gere uma chave no site: https://acte.ltd/utils/randomkeygen
 
-## 🔥 **Passo 3: Configurar as Credenciais no EasyPanel**
-1. **Copie as credenciais** do PostgreSQL e Redis (usuário, senha, host, porta).  
-2. **Cole essas informações nas Variáveis de Ambiente** do **n8n-main**.  
+Configure a chave:
 
----
+Abra o arquivo de configuração (vi /home/node/.n8n/config).
+Pressione i para editar, apague a chave antiga e cole a copiada.
+Pressione Esc e digite :wq, depois pressione Enter para salvar e sair.
+Repita nas demais instâncias:
 
-## 🔥 **Passo 4: Criar as instâncias webhook e worker**
-Agora precisamos adicionar **duas instâncias adicionais** do n8n:
-- **n8n-webhook** (processa requisições HTTP)
-- **n8n-worker** (executa fluxos na fila BullMQ)
+Certifique-se de usar a mesma chave em todas.
+Atualize a Encryption Key nas Environment Variables:
 
-📌 **No EasyPanel, crie duas novas instâncias do n8n com a mesma configuração do `n8n-main` e apenas mude o nome do serviço.**
+Encontre a linha com a chave (N8N_ENCRYPTION_KEY).
+Repita para as 3 instâncias
+6. Configure os dominios
+Va na aba "Domains"
+Configure os domínios igual no seu DNS.
+7. Configure os comandos
+Configurar a instância main:
 
-**n8n-webhook:**
-```json
-{
-  "type": "app",
-  "data": {
-    "projectName": "n8n-webhook",
-    "serviceName": "n8n-webhook",
-    "source": {
-      "type": "image",
-      "image": "n8nio/n8n:latest"
-    },
-    "env": "COPIE TODAS AS VARIÁVEIS DO n8n-main",
-    "command": "n8n webhook"
-  }
-}
-```
+Acesse a aba Advanced.
+No campo Command, insira:
+n8n start
+Configurar a instância webhook:
 
-**n8n-worker:**
-```json
-{
-  "type": "app",
-  "data": {
-    "projectName": "n8n-worker",
-    "serviceName": "n8n-worker",
-    "source": {
-      "type": "image",
-      "image": "n8nio/n8n:latest"
-    },
-    "env": "COPIE TODAS AS VARIÁVEIS DO n8n-main",
-    "command": "n8n worker --concurrency=5"
-  }
-}
-```
+Acesse a aba Advanced.
+No campo Command, insira:
+n8n webhook
+Configurar a instância worker:
 
-✅ **Agora o n8n processa tarefas de forma distribuída.**
-
----
-
-## 🔥 **Passo 5: Configurar a Encryption Key no EasyPanel**
-⚠️ **É essencial usar a mesma chave de criptografia (`N8N_ENCRYPTION_KEY`) em todas as instâncias do n8n**.  
-
-1. **Gere uma chave aleatória aqui:** [Random Key Generator](https://acte.ltd/utils/randomkeygen)  
-2. **Acesse o console do servidor no EasyPanel:**  
-   ```bash
-   vi /home/node/.n8n/config
-   ```
-3. **Edite a chave de criptografia:**
-   - Pressione `i` para entrar no modo de edição.  
-   - Apague a chave antiga e cole a nova.  
-   - Pressione `ESC`, digite `:wq` e pressione `Enter`.  
-
-4. **Repita esse processo nas instâncias `n8n-webhook` e `n8n-worker`.**
-
----
-
-## 🔥 **Passo 6: Configurar um Backup Automático**
-⚠️ **Isso evita perda de dados mesmo se algo der errado.**  
-
-1. Crie um arquivo de backup no servidor:
-   ```bash
-   nano /home/backup_postgres.sh
-   ```
-2. Adicione o seguinte código:
-   ```bash
-   #!/bin/bash
-   PGPASSWORD="password" pg_dump -U postgres -h n8n-postgres -p 5432 n8n_database > /home/backup_n8n.sql
-   ```
-3. Salve (`CTRL+X`, `Y`, `Enter`).
-4. Torne o script executável:
-   ```bash
-   chmod +x /home/backup_postgres.sh
-   ```
-5. Adicione um **cron job** para rodar automaticamente todos os dias às 3h da manhã:
-   ```bash
-   crontab -e
-   ```
-   Adicione esta linha:
-   ```bash
-   0 3 * * * /bin/bash /home/backup_postgres.sh
-   ```
-
-✅ **Agora, seu banco de dados será salvo automaticamente!**
-
----
-
-## 🚀 **Finalizando**
-Agora seu n8n está **seguro contra perdas de dados** e **otimizado para filas** no EasyPanel!  
-
-Se precisar de ajustes, só avisar. 🚀
+Acesse a aba Advanced.
+No campo Command, insira:
+n8n worker --concurrency=5
