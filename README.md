@@ -1,7 +1,8 @@
-n8nmodofila
+# n8nmodofila
 Como instalar o N8N em modo fila
 
-1. Instalar Postgres e Redis
+## 1. Instalar Postgres e Redis
+```
 {
   "services": [
     {
@@ -22,7 +23,10 @@ Como instalar o N8N em modo fila
     }
   ]
 }
-2. Instalar n8n-main
+```
+
+## 2. Instalar n8n-main
+```
 {
   "services": [
     {
@@ -46,48 +50,63 @@ Como instalar o N8N em modo fila
     }
   ]
 }
-3. Configurar as variáveis
+```
+## 3. Configurar as variáveis
 Copiar e colar as Credentials do Postgres e Redis para dentro da Environment Variables do n8n-main
 
-4. Duplicar em n8n-hook e n8n-worker
-A) Criar mais duas N8N através da Template do EasyPanel
-B) Nomear n8n-hook e n8n-worker
-C) Copiar e colar as Environment Variables do passo 3
-5. Configurar a Encryption Key no EasyPanel
-Acesse o console do EasyPanel:
+## 4. Duplicar em n8n-hook e n8n-worker
+#### A) Criar mais duas N8N através da Template do EasyPanel
+#### B) Nomear n8n-hook e n8n-worker
+#### C) Copiar e colar as Environment Variables do passo 3
 
-Digite:
-vi /home/node/.n8n/config
-Gere uma chave no site: https://acte.ltd/utils/randomkeygen
+## 5. Configurar a Encryption Key no EasyPanel
 
-Configure a chave:
+1. **Acesse o console do EasyPanel**:
+   - Digite:
+     ```bash
+     vi /home/node/.n8n/config
+     ```
 
-Abra o arquivo de configuração (vi /home/node/.n8n/config).
-Pressione i para editar, apague a chave antiga e cole a copiada.
-Pressione Esc e digite :wq, depois pressione Enter para salvar e sair.
-Repita nas demais instâncias:
+2. **Gere uma chave no site:** https://acte.ltd/utils/randomkeygen
 
-Certifique-se de usar a mesma chave em todas.
-Atualize a Encryption Key nas Environment Variables:
+3. **Configure a chave**:
+   - Abra o arquivo de configuração (`vi /home/node/.n8n/config`).
+   - Pressione **`i`** para editar, apague a chave antiga e cole a copiada.
+   - Pressione **`Esc`** e digite `:wq`, depois pressione Enter para salvar e sair.
 
-Encontre a linha com a chave (N8N_ENCRYPTION_KEY).
-Repita para as 3 instâncias
-6. Configure os dominios
-Va na aba "Domains"
-Configure os domínios igual no seu DNS.
-7. Configure os comandos
-Configurar a instância main:
+4. **Repita nas demais instâncias**:
+   - Certifique-se de usar a mesma chave em todas.
+  
+5. **Atualize a Encryption Key nas Environment Variables**:
+   - Encontre a linha com a chave (`N8N_ENCRYPTION_KEY`).
+   - Repita para as 3 instâncias
 
-Acesse a aba Advanced.
-No campo Command, insira:
-n8n start
-Configurar a instância webhook:
+## 6. Configure os dominios
+   - Va na aba "Domains"
+   - Configure os domínios igual no seu DNS.
 
-Acesse a aba Advanced.
-No campo Command, insira:
-n8n webhook
-Configurar a instância worker:
+## 7. Configure os comandos
 
-Acesse a aba Advanced.
-No campo Command, insira:
-n8n worker --concurrency=5
+1. **Configurar a instância main**:
+   - Acesse a aba **Advanced**.
+   - No campo **Command**, insira:
+     ```bash
+     n8n start
+     ```
+
+2. **Configurar a instância webhook**:
+   - Acesse a aba **Advanced**.
+   - No campo **Command**, insira:
+     ```bash
+     n8n webhook
+     ```
+
+3. **Configurar a instância worker**:
+   - Acesse a aba **Advanced**.
+   - No campo **Command**, insira:
+     ```bash
+     n8n worker --concurrency=5
+     ```
+
+
+
