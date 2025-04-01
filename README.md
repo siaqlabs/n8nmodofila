@@ -10,7 +10,7 @@ Como instalar o N8N em modo fila
       "data": {
         "projectName": "n8n-postgres",
         "serviceName": "n8n-postgres",
-        "image": "bitnami/postgresql:16"
+        "image": "bitnami/postgresql:17.4.0"
       }
     },
     {
